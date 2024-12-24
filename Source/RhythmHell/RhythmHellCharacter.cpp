@@ -10,17 +10,18 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Interactable.h"
+#include "VinylRecord.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 //////////////////////////////////////////////////////////////////////////
 // ARhythmHellCharacter
 
-ARhythmHellCharacter::ARhythmHellCharacter()
-{
+ARhythmHellCharacter::ARhythmHellCharacter() {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-		
+
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -52,30 +53,28 @@ ARhythmHellCharacter::ARhythmHellCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+	InteractionRange = 200.0f;
 }
 
 //////////////////////////////////////////////////////////////////////////
 // Input
 
-void ARhythmHellCharacter::NotifyControllerChanged()
-{
+void ARhythmHellCharacter::NotifyControllerChanged() {
 	Super::NotifyControllerChanged();
 
 	// Add Input Mapping Context
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller)) {
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer())) {
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
 }
 
-void ARhythmHellCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
+void ARhythmHellCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
-		
+
 		// Jumping
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
@@ -85,27 +84,66 @@ void ARhythmHellCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ARhythmHellCharacter::Look);
-	}
-	else
-	{
+
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ARhythmHellCharacter::Interact);
+	} else {
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
 }
 
-void ARhythmHellCharacter::Move(const FInputActionValue& Value)
-{
+void ARhythmHellCharacter::BeginPlay() {
+	Super::BeginPlay();
+}
+
+void ARhythmHellCharacter::Tick(float DeltaTime) {
+	Super::Tick(DeltaTime);
+}
+
+void ARhythmHellCharacter::Interact() {
+	UE_LOG(LogTemp, Warning, TEXT("Pls interact"));
+	PerformLineTrace();
+}
+
+void ARhythmHellCharacter::RhythmHit(const FInputActionValue& Value) {}
+
+void ARhythmHellCharacter::PerformLineTrace() {
+	FVector StartPoint = GetActorLocation();
+	FVector EndPoint = StartPoint + (GetActorForwardVector() * InteractionRange);
+
+	FHitResult HitResult;
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
+
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, StartPoint, EndPoint, ECC_Visibility, CollisionParams)) {
+		if (AActor* HitActor = HitResult.GetActor()) {
+			UE_LOG(LogTemp, Warning, TEXT("Interacted with: %s"), *HitActor->GetName());
+			if (HitActor->GetClass()->ImplementsInterface(UInteractable::StaticClass())) {
+				IInteractable::Execute_OnInteract(HitActor, this);
+
+				// Check if the interacted object is a vinyl record
+				if (HitActor->IsA(AVinylRecord::StaticClass())) {
+					PickedUpVinyl = HitActor; // Store the vinyl record
+					UE_LOG(LogTemp, Log, TEXT("Picked up vinyl: %s"), *PickedUpVinyl->GetName());
+				}
+			}
+		}
+	}
+
+	DrawDebugLine(GetWorld(), StartPoint, EndPoint, FColor::Blue, false, 1.0f, 0, 2.0f);
+}
+
+void ARhythmHellCharacter::Move(const FInputActionValue& Value) {
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
-	if (Controller != nullptr)
-	{
+	if (Controller != nullptr) {
 		// find out which way is forward
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
 
 		// get forward vector
 		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-	
+
 		// get right vector 
 		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
@@ -115,13 +153,11 @@ void ARhythmHellCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
-void ARhythmHellCharacter::Look(const FInputActionValue& Value)
-{
+void ARhythmHellCharacter::Look(const FInputActionValue& Value) {
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 
-	if (Controller != nullptr)
-	{
+	if (Controller != nullptr) {
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);

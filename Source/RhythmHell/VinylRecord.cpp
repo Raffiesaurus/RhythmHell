@@ -26,8 +26,13 @@ void AVinylRecord::Tick(float DeltaTime) {
 }
 
 void AVinylRecord::OnInteract_Implementation(AActor* Interactor) {
-	UE_LOG(LogTemp, Warning, TEXT("HELP"));
 	if (ARhythmHellCharacter* Character = Cast<ARhythmHellCharacter>(Interactor)) {
-		UE_LOG(LogTemp, Warning, TEXT("Picked up vinyl: %s"), *SongName);
+		//UE_LOG(LogTemp, Warning, TEXT("Vinyl %s has been picked up by player."), *SongName);
+	}
+}
+
+void AVinylRecord::Highlight_Implementation(bool bEnable) {
+	if (VinylMesh) {
+		VinylMesh->SetRenderCustomDepth(bEnable);
 	}
 }

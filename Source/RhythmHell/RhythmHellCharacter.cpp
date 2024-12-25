@@ -11,7 +11,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Interactable.h"
-#include "VinylRecord.h"
+#include "Blueprint/UserWidget.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -93,43 +93,102 @@ void ARhythmHellCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 void ARhythmHellCharacter::BeginPlay() {
 	Super::BeginPlay();
+
+	if (VinylHUDClass) {
+		VinylHUDWidget = CreateWidget<UUserWidget>(GetWorld(), VinylHUDClass);
+
+		if (VinylHUDWidget) {
+			VinylHUDWidget->AddToViewport();
+		}
+	}
 }
 
 void ARhythmHellCharacter::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
+	SearchForNearbyInteractables(false);
 }
 
 void ARhythmHellCharacter::Interact() {
-	UE_LOG(LogTemp, Warning, TEXT("Pls interact"));
-	PerformLineTrace();
+	SearchForNearbyInteractables(true);
 }
 
 void ARhythmHellCharacter::RhythmHit(const FInputActionValue& Value) {}
 
-void ARhythmHellCharacter::PerformLineTrace() {
+void ARhythmHellCharacter::AttachVinylToCharacter(AVinylRecord* Vinyl) {
+
+	if (PickedUpVinyl) {
+		DetachVinylFromCharacter();
+	}
+
+	if (Vinyl && GetMesh()) {
+
+		PickedUpVinyl = Vinyl;
+
+		if (UPrimitiveComponent* VinylRoot = Cast<UPrimitiveComponent>(PickedUpVinyl->GetRootComponent())) {
+			VinylRoot->SetSimulatePhysics(false);
+		}
+
+		PickedUpVinyl->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, VinylSocketName);
+		PickedUpVinyl->SetActorEnableCollision(false);
+
+		FText VinylName = FText::FromString(*PickedUpVinyl->SongName);
+		UE_LOG(LogTemp, Log, TEXT("Picked up a vinyl"));
+
+		UFunction* UpdateFunction = VinylHUDWidget->FindFunction(TEXT("SetPickedUpVinyl"));
+		if (UpdateFunction) {
+			VinylHUDWidget->ProcessEvent(UpdateFunction, &VinylName);
+		}
+	}
+
+}
+
+void ARhythmHellCharacter::DetachVinylFromCharacter() {
+
+	if (PickedUpVinyl) {
+		PickedUpVinyl->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+
+		PickedUpVinyl->SetActorEnableCollision(true);
+
+		if (UPrimitiveComponent* VinylRoot = Cast<UPrimitiveComponent>(PickedUpVinyl->GetRootComponent())) {
+			VinylRoot->SetSimulatePhysics(true);
+		}
+
+		PickedUpVinyl = nullptr;
+	}
+
+}
+
+void ARhythmHellCharacter::SearchForNearbyInteractables(bool bInteract) {
 	FVector StartPoint = GetActorLocation();
 	FVector EndPoint = StartPoint + (GetActorForwardVector() * InteractionRange);
 
-	FHitResult HitResult;
-	FCollisionQueryParams CollisionParams;
-	CollisionParams.AddIgnoredActor(this);
+	TArray<FHitResult> HitResults;
+	FCollisionShape Sphere = FCollisionShape::MakeSphere(100.0f);
 
-	if (GetWorld()->LineTraceSingleByChannel(HitResult, StartPoint, EndPoint, ECC_Visibility, CollisionParams)) {
-		if (AActor* HitActor = HitResult.GetActor()) {
-			UE_LOG(LogTemp, Warning, TEXT("Interacted with: %s"), *HitActor->GetName());
-			if (HitActor->GetClass()->ImplementsInterface(UInteractable::StaticClass())) {
-				IInteractable::Execute_OnInteract(HitActor, this);
+	FCollisionQueryParams CollisionQueryParams;
+	CollisionQueryParams.AddIgnoredActor(this);
 
-				// Check if the interacted object is a vinyl record
-				if (HitActor->IsA(AVinylRecord::StaticClass())) {
-					PickedUpVinyl = HitActor; // Store the vinyl record
-					UE_LOG(LogTemp, Log, TEXT("Picked up vinyl: %s"), *PickedUpVinyl->GetName());
+	if (GetWorld()->SweepMultiByChannel(HitResults, StartPoint, EndPoint, FQuat::Identity, ECC_GameTraceChannel1, Sphere, CollisionQueryParams)) {
+		for (const FHitResult& Hit : HitResults) {
+			if (AActor* HitActor = Hit.GetActor()) {
+				//UE_LOG(LogTemp, Warning, TEXT("Interacted with: %s"), *HitActor->GetName());
+				if (HitActor->GetClass()->ImplementsInterface(UInteractable::StaticClass())) {
+
+					IInteractable::Execute_Highlight(HitActor, true);
+
+					if (bInteract) {
+						IInteractable::Execute_OnInteract(HitActor, this);
+
+						// Check if the interacted object is a vinyl record
+						if (HitActor->IsA(AVinylRecord::StaticClass())) {
+							AttachVinylToCharacter(Cast<AVinylRecord>(HitActor));
+						}
+					}
 				}
 			}
 		}
 	}
 
-	DrawDebugLine(GetWorld(), StartPoint, EndPoint, FColor::Blue, false, 1.0f, 0, 2.0f);
 }
 
 void ARhythmHellCharacter::Move(const FInputActionValue& Value) {

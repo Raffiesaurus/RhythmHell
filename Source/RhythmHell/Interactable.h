@@ -6,7 +6,7 @@
 #include "UObject/Interface.h"
 #include "Interactable.generated.h"
 /**
- * 
+ *
  */
 
 UINTERFACE(MinimalAPI)
@@ -19,7 +19,10 @@ class RHYTHMHELL_API IInteractable
 	GENERATED_BODY()
 
 public:
-	
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
+	void Highlight(bool bEnable);
+
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
 	void OnInteract(AActor* Interactor);
 };

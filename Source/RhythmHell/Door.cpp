@@ -3,6 +3,7 @@
 
 #include "Door.h"
 #include "Kismet/GameplayStatics.h"
+#include "RhythmHellCharacter.h"
 
 // Sets default values
 ADoor::ADoor() {
@@ -26,8 +27,10 @@ void ADoor::Tick(float DeltaTime) {
 }
 
 void ADoor::OnInteract_Implementation(AActor* Interactor) {
-	if (LevelToLoad != NAME_None) {
-		UGameplayStatics::OpenLevel(GetWorld(), LevelToLoad);
+	if (ARhythmHellCharacter* Player = Cast<ARhythmHellCharacter>(Interactor)) {
+		UE_LOG(LogTemp, Warning, TEXT("Door has been activated."));
+		//	if (LevelToLoad != NAME_None) {
+		//		UGameplayStatics::OpenLevel(GetWorld(), LevelToLoad);
+		//	}
 	}
 }
-

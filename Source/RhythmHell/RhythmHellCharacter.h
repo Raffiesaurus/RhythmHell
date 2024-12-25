@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include "VinylRecord.h"
 #include "RhythmHellCharacter.generated.h"
 
 class USpringArmComponent;
@@ -65,6 +66,18 @@ protected:
 
 protected:
 
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UUserWidget> VinylHUDClass;
+
+	UPROPERTY()
+	UUserWidget* VinylHUDWidget;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Attachments")
+	FName VinylSocketName = "VinylSocket";
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attachments")
+	AVinylRecord* PickedUpVinyl;
+
 	virtual void NotifyControllerChanged() override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -72,6 +85,7 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
@@ -79,15 +93,14 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
-	//UFUNCTION(BlueprintCallable, Category = "Interact")	
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interact")
 	float InteractionRange = 50.0f;
 
+	void AttachVinylToCharacter(AVinylRecord* Vinyl);
+
+	void DetachVinylFromCharacter();
+
 private:
-	void PerformLineTrace();
-
-	AActor* PickedUpVinyl;
-
+	void SearchForNearbyInteractables(bool bInteract);
 };
 

@@ -32,4 +32,6 @@ public:
 
 	virtual void OnInteract_Implementation(AActor* Interactor) override;
 
+	void Highlight_Implementation(bool bEnable);
+
 };

@@ -1,10 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Raffiesaurus, 2025
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Interactable.h"
+#include "Components/WidgetComponent.h"
 #include "VinylRecord.generated.h"
 
 UCLASS()
@@ -34,4 +35,8 @@ public:
 
 	void Highlight_Implementation(bool bEnable);
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UWidgetComponent* InfoWidgetComponent;
+
+	bool bHighlighted = false;
 };

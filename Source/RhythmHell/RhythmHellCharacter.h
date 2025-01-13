@@ -48,6 +48,9 @@ class ARhythmHellCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* InteractAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* PauseAction;
+
 public:
 	ARhythmHellCharacter();
 	
@@ -64,12 +67,13 @@ protected:
 
 	void RhythmHit(const FInputActionValue& Value);
 
+	UFUNCTION(BlueprintCallable)
+	void Pause();
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<UUserWidget> VinylHUDClass;
-
-	UPROPERTY()
 	UUserWidget* VinylHUDWidget;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Attachments")
@@ -77,6 +81,10 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attachments")
 	AVinylRecord* PickedUpVinyl;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UUserWidget> PauseMenuWidgetClass;
+	UUserWidget* PauseMenuWidget;
 
 	virtual void NotifyControllerChanged() override;
 
@@ -100,7 +108,18 @@ public:
 
 	void DetachVinylFromCharacter();
 
+	bool bIsCarryingVinyl = false;
+
+	bool bHasPausedGame = false;
+
+	void ShowPauseMenu();
+
+	void RemovePauseMenu();
+
 private:
 	void SearchForNearbyInteractables(bool bInteract);
+
+	AActor* LastHighlightedActor = nullptr;
+
 };
 

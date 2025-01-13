@@ -1,9 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Raffiesaurus, 2025
 
 
 #include "Door.h"
 #include "Kismet/GameplayStatics.h"
 #include "RhythmHellCharacter.h"
+#include "Helpers.h"
 
 // Sets default values
 ADoor::ADoor() {
@@ -11,13 +12,30 @@ ADoor::ADoor() {
 	PrimaryActorTick.bCanEverTick = true;
 
 	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
+	TriggerBox = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
+
 	RootComponent = DoorMesh;
+
+	TriggerBox->SetupAttachment(DoorMesh);
+	TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	TriggerBox->SetCollisionObjectType(ECC_WorldDynamic);
+	TriggerBox->SetCollisionResponseToAllChannels(ECR_Overlap);
+	TriggerBox->SetBoxExtent(FVector(50.0f, 50.0f, 50.0f));
+	TriggerBox->SetRelativeLocation(FVector::ZeroVector);
+
 }
 
 // Called when the game starts or when spawned
 void ADoor::BeginPlay() {
 	Super::BeginPlay();
 
+	if (DoorMesh && TriggerBox) {
+		FVector Origin, BoxExtent;
+		DoorMesh->GetLocalBounds(Origin, BoxExtent);
+
+		TriggerBox->SetBoxExtent(BoxExtent);
+		TriggerBox->SetRelativeLocation(Origin);
+	}
 }
 
 // Called every frame
@@ -34,3 +52,29 @@ void ADoor::OnInteract_Implementation(AActor* Interactor) {
 		//	}
 	}
 }
+
+void ADoor::NotifyActorBeginOverlap(AActor* OtherActor) {
+	Super::NotifyActorBeginOverlap(OtherActor);
+
+	ARhythmHellCharacter* Player = Cast<ARhythmHellCharacter>(OtherActor);
+	if (Player) {
+		if (Player->bIsCarryingVinyl) {
+			if (!LevelToLoad.IsNone()) {
+				UE_LOG(LogTemp, Warning, TEXT("Loading: %s"), *LevelToLoad.ToString());
+				UGameplayStatics::OpenLevel(GetWorld(), LevelToLoad);
+			} else {
+				UE_LOG(LogTemp, Warning, TEXT("Empty Level"));
+			}
+		} else {
+			DisplyPickupPrompt();
+		}
+	}
+
+}
+
+void ADoor::DisplyPickupPrompt() {
+
+	UE_LOG(LogTemp, Warning, TEXT("Go pickup something idiot"));
+
+}
+

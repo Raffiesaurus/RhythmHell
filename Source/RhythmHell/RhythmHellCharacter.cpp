@@ -11,6 +11,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Interactable.h"
+#include "Kismet/GameplayStatics.h"
 #include "Blueprint/UserWidget.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -86,6 +87,8 @@ void ARhythmHellCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ARhythmHellCharacter::Look);
 
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ARhythmHellCharacter::Interact);
+
+		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &ARhythmHellCharacter::Pause);
 	} else {
 		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
@@ -114,6 +117,22 @@ void ARhythmHellCharacter::Interact() {
 
 void ARhythmHellCharacter::RhythmHit(const FInputActionValue& Value) {}
 
+void ARhythmHellCharacter::Pause() {
+
+	UE_LOG(LogTemp, Warning, TEXT("PauseD?"));
+
+	if (bHasPausedGame) {
+		UGameplayStatics::SetGamePaused(GetWorld(), false);
+		RemovePauseMenu();
+		bHasPausedGame = false;
+	} else {
+		UGameplayStatics::SetGamePaused(GetWorld(), true);
+		ShowPauseMenu();
+		bHasPausedGame = true;
+	}
+
+}
+
 void ARhythmHellCharacter::AttachVinylToCharacter(AVinylRecord* Vinyl) {
 
 	if (PickedUpVinyl) {
@@ -123,6 +142,7 @@ void ARhythmHellCharacter::AttachVinylToCharacter(AVinylRecord* Vinyl) {
 	if (Vinyl && GetMesh()) {
 
 		PickedUpVinyl = Vinyl;
+		bIsCarryingVinyl = true;
 
 		if (UPrimitiveComponent* VinylRoot = Cast<UPrimitiveComponent>(PickedUpVinyl->GetRootComponent())) {
 			VinylRoot->SetSimulatePhysics(false);
@@ -145,6 +165,9 @@ void ARhythmHellCharacter::AttachVinylToCharacter(AVinylRecord* Vinyl) {
 void ARhythmHellCharacter::DetachVinylFromCharacter() {
 
 	if (PickedUpVinyl) {
+
+		bIsCarryingVinyl = false;
+
 		PickedUpVinyl->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 
 		PickedUpVinyl->SetActorEnableCollision(true);
@@ -158,36 +181,92 @@ void ARhythmHellCharacter::DetachVinylFromCharacter() {
 
 }
 
+void ARhythmHellCharacter::ShowPauseMenu() {
+	if (!PauseMenuWidget) {
+		PauseMenuWidget = CreateWidget<UUserWidget>(GetWorld(), PauseMenuWidgetClass);
+	}
+	PauseMenuWidget->AddToViewport();
+
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+
+	if (PlayerController) {
+		PlayerController->bShowMouseCursor = true;
+
+		FInputModeUIOnly InputMode;
+		InputMode.SetWidgetToFocus(PauseMenuWidget->TakeWidget());
+		PlayerController->SetInputMode(InputMode);
+	}
+
+}
+
+void ARhythmHellCharacter::RemovePauseMenu() {
+	if (PauseMenuWidget) {
+		PauseMenuWidget->RemoveFromViewport();
+	}
+
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+
+	if (PlayerController) {
+		PlayerController->bShowMouseCursor = false;
+
+		FInputModeGameOnly InputMode;
+		PlayerController->SetInputMode(InputMode);
+	}
+}
+
 void ARhythmHellCharacter::SearchForNearbyInteractables(bool bInteract) {
 	FVector StartPoint = GetActorLocation();
 	FVector EndPoint = StartPoint + (GetActorForwardVector() * InteractionRange);
 
 	TArray<FHitResult> HitResults;
-	FCollisionShape Sphere = FCollisionShape::MakeSphere(100.0f);
+	FCollisionShape Sphere = FCollisionShape::MakeSphere(InteractionRange);
 
 	FCollisionQueryParams CollisionQueryParams;
 	CollisionQueryParams.AddIgnoredActor(this);
 
+	bool bPickedUpVinylThisAction = false;
+
 	if (GetWorld()->SweepMultiByChannel(HitResults, StartPoint, EndPoint, FQuat::Identity, ECC_GameTraceChannel1, Sphere, CollisionQueryParams)) {
+		AActor* CurrentHighlightedActor = nullptr;
 		for (const FHitResult& Hit : HitResults) {
 			if (AActor* HitActor = Hit.GetActor()) {
-				//UE_LOG(LogTemp, Warning, TEXT("Interacted with: %s"), *HitActor->GetName());
 				if (HitActor->GetClass()->ImplementsInterface(UInteractable::StaticClass())) {
 
 					IInteractable::Execute_Highlight(HitActor, true);
+					CurrentHighlightedActor = HitActor;
 
 					if (bInteract) {
 						IInteractable::Execute_OnInteract(HitActor, this);
 
 						// Check if the interacted object is a vinyl record
-						if (HitActor->IsA(AVinylRecord::StaticClass())) {
+						if (HitActor->IsA(AVinylRecord::StaticClass()) && !bPickedUpVinylThisAction) {
+							bPickedUpVinylThisAction = true;
 							AttachVinylToCharacter(Cast<AVinylRecord>(HitActor));
 						}
 					}
+					break;
 				}
 			}
 		}
+
+		if (LastHighlightedActor && LastHighlightedActor != CurrentHighlightedActor) {
+			if (LastHighlightedActor->GetClass()->ImplementsInterface(UInteractable::StaticClass())) {
+				IInteractable::Execute_Highlight(LastHighlightedActor, false);
+			}
+		}
+		LastHighlightedActor = CurrentHighlightedActor;
+	} else {
+		if (LastHighlightedActor) {
+			if (LastHighlightedActor->GetClass()->ImplementsInterface(UInteractable::StaticClass())) {
+				IInteractable::Execute_Highlight(LastHighlightedActor, false);
+			}
+			LastHighlightedActor = nullptr;
+		}
 	}
+
+
+
+	DrawDebugSphere(GetWorld(), StartPoint, Sphere.GetSphereRadius(), 12, FColor::Red, false, 0.0f);
 
 }
 

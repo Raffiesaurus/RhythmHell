@@ -1,10 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Raffiesaurus, 2025
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Interactable.h"
+#include "Components/BoxComponent.h"
 #include "Door.generated.h"
 
 UCLASS()
@@ -30,6 +31,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gameplay")
 	FName LevelToLoad;
 
+	UPROPERTY(VisibleAnywhere, Category = "Trigger")
+	UBoxComponent* TriggerBox;
+	
 	virtual void OnInteract_Implementation(AActor* Interactor) override;
 
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+
+private:
+	void DisplyPickupPrompt();
 };

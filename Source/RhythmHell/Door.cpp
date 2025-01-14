@@ -77,4 +77,3 @@ void ADoor::DisplyPickupPrompt() {
 	UE_LOG(LogTemp, Warning, TEXT("Go pickup something idiot"));
 
 }
-

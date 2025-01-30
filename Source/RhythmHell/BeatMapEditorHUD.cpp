@@ -41,10 +41,9 @@ void ABeatMapEditorHUD::DrawTimeline() {
 	DrawLine(PlayheadX, StartY, PlayheadX, StartY + Height, PlayheadColor);
 
 	if (EditorMode->bIsPlaying) {
-		//TimelineScroll = FMath::Clamp(EditorMode->CurrentTime - 0.1f, 0.0f, 999999999.999f);
-		//TimelineScroll = FMath::Clamp(PlayheadX - 0.1f, 0.0f, 999999999.999f);
-		TimelineScroll = EditorMode->CurrentTime;
-		//TimelineScroll += 0.015;
+		TimelineScroll = EditorMode->CurrentTime - (PlayheadX - StartX) / (PlaybackCanvas->SizeX * 0.8f / TimelineZoom);
+		TimelineScroll = FMath::Max(TimelineScroll, 0.0f); // Ensure TimelineScroll is not negative
+		UE_LOG(LogTemp, Warning, TEXT("TimelineScroll: %f"), TimelineScroll);
 	}
 }
 
@@ -200,15 +199,15 @@ int32 ABeatMapEditorHUD::GetNoteAtPosition(FVector2D Position) {
 	return -1;
 }
 
-float ABeatMapEditorHUD::TimeToScreenX(float Time) {
+float ABeatMapEditorHUD::TimeToScreenX(float Time) const {
 	return PlaybackCanvas->SizeX * (0.1f + (Time * TimelineZoom - TimelineScroll) * 0.8f);
 }
 
-float ABeatMapEditorHUD::ScreenXToTime(float X) {
+float ABeatMapEditorHUD::ScreenXToTime(float X) const {
 	return ((X / PlaybackCanvas->SizeX - 0.1f) / 0.8f + TimelineScroll) / TimelineZoom;
 }
 
-int32 ABeatMapEditorHUD::ScreenYToLane(float Y) {
+int32 ABeatMapEditorHUD::ScreenYToLane(float Y) const {
 	float RelativeY = (Y - PlaybackCanvas->SizeY * 0.15f) / (PlaybackCanvas->SizeY * 0.7f);
 	return FMath::Clamp(FMath::FloorToInt(RelativeY * 4), 0, 3);
 }

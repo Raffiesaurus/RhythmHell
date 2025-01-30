@@ -49,7 +49,7 @@ public:
 	TObjectPtr<UCanvas> PlaybackCanvas;
 
 private:
-	float TimeToScreenX(float Time);
-	float ScreenXToTime(float X);
-	int32 ScreenYToLane(float Y);
+	float TimeToScreenX(float Time) const;
+	float ScreenXToTime(float X) const;
+	int32 ScreenYToLane(float Y) const;
 };

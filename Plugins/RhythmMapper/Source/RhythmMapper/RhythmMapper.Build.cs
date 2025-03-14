@@ -6,7 +6,7 @@ public class RhythmMapper : ModuleRules
 {
 	public RhythmMapper(ReadOnlyTargetRules target) : base(target)
 	{
-		PublicDependencyModuleNames.AddRange(new string[] { "UMG" });
+		PrivateDependencyModuleNames.AddRange(new string[] { "EditorScriptingUtilities" });
 
 		PublicIncludePaths.AddRange(
 			[
@@ -40,7 +40,8 @@ public class RhythmMapper : ModuleRules
 				"Blutility",
 				"UMG",
 				"ScriptableEditorWidgets",
-				"UMGEditor"
+				"UMGEditor",
+				"MediaAssets",
 				// ... add private dependencies that you statically link with here ...	
 			]
 		);

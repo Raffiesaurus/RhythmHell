@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "RhythmHellCharacter.h"
 #include "Helpers.h"
+#include "RhythmGameInstance.h"
 
 // Sets default values
 ADoor::ADoor() {
@@ -47,20 +48,17 @@ void ADoor::Tick(float DeltaTime) {
 void ADoor::OnInteract_Implementation(AActor* Interactor) {
 	if (ARhythmHellCharacter* Player = Cast<ARhythmHellCharacter>(Interactor)) {
 		UE_LOG(LogTemp, Warning, TEXT("Door has been activated."));
-		//	if (LevelToLoad != NAME_None) {
-		//		UGameplayStatics::OpenLevel(GetWorld(), LevelToLoad);
-		//	}
 	}
 }
 
 void ADoor::NotifyActorBeginOverlap(AActor* OtherActor) {
 	Super::NotifyActorBeginOverlap(OtherActor);
 
-	ARhythmHellCharacter* Player = Cast<ARhythmHellCharacter>(OtherActor);
-	if (Player) {
+	if (ARhythmHellCharacter* Player = Cast<ARhythmHellCharacter>(OtherActor)) {
 		if (Player->bIsCarryingVinyl) {
 			if (!LevelToLoad.IsNone()) {
 				UE_LOG(LogTemp, Warning, TEXT("Loading: %s"), *LevelToLoad.ToString());
+				Player->StoreAndLoad();
 				UGameplayStatics::OpenLevel(GetWorld(), LevelToLoad);
 			} else {
 				UE_LOG(LogTemp, Warning, TEXT("Empty Level"));

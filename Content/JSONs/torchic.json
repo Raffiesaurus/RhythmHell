@@ -1,0 +1,138 @@
+{
+  "levelName": "Tutorial Level",
+  "audioPath": "/Game/Audio/Music/Collapse01",
+  "bpm": 120,
+  "startOffset": 0.5,
+  "difficulty": "EASY",
+  "hits": [
+    {
+      "timestamp": 1.0,
+      "direction": "Up",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 2.0,
+      "direction": "Down",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 3.0,
+      "direction": "Left",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 4.0,
+      "direction": "Right",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 5.0,
+      "direction": "Up",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 5.5,
+      "direction": "Down",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 6.0,
+      "direction": "Left",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 6.5,
+      "direction": "Right",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 7.0,
+      "direction": "Up",
+      "hitType": "LONG_START",
+      "endTimestamp": 8.0
+    },
+    {
+      "timestamp": 9.0,
+      "direction": "Down",
+      "hitType": "LONG_START",
+      "endTimestamp": 10.0
+    },
+    {
+      "timestamp": 11.0,
+      "direction": "Left",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 11.5,
+      "direction": "Right",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 12.0,
+      "direction": "Up",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 12.5,
+      "direction": "Down",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 13.0,
+      "direction": "Left",
+      "hitType": "LONG_START",
+      "endTimestamp": 14.0
+    },
+    {
+      "timestamp": 15.0,
+      "direction": "Right",
+      "hitType": "LONG_START",
+      "endTimestamp": 16.0
+    },
+    {
+      "timestamp": 17.0,
+      "direction": "Up",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 17.25,
+      "direction": "Down",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 17.5,
+      "direction": "Left",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 17.75,
+      "direction": "Right",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 18.0,
+      "direction": "Up",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 18.5,
+      "direction": "Down",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 19.0,
+      "direction": "Left",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 19.5,
+      "direction": "Right",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 20.0,
+      "direction": "Up",
+      "hitType": "BASIC"
+    }
+  ]
+}

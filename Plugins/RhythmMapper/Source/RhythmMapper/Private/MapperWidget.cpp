@@ -571,7 +571,6 @@ void UMapperWidget::NativePreConstruct() {
 
 void UMapperWidget::NativeConstruct() {
 	Super::NativeConstruct();
-	SetIsFocusable(true);
 }
 
 void UMapperWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime) {

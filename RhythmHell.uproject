@@ -11,7 +11,8 @@
 			"AdditionalDependencies": [
 				"Engine",
 				"UMGEditor",
-				"Blutility"
+				"Blutility",
+				"UMG"
 			]
 		}
 	],
@@ -24,8 +25,8 @@
 			]
 		},
 		{
-			"Name": "LiveUpdateForSlate",
-			"Enabled": true
+			"Name": "N10XSourceCodeAccess",
+			"Enabled": false
 		}
 	]
 }

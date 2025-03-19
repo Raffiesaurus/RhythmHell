@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "RhythmGameplayController.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "VinylRecord.h"
@@ -17,8 +18,7 @@ struct FInputActionValue;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS(config=Game)
-class ARhythmHellCharacter : public ACharacter
-{
+class ARhythmHellCharacter : public ACharacter {
 	GENERATED_BODY()
 
 	/** Camera boom positioning the camera behind the character */
@@ -28,7 +28,7 @@ class ARhythmHellCharacter : public ACharacter
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
-	
+
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* DefaultMappingContext;
@@ -51,18 +51,32 @@ class ARhythmHellCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* PauseAction;
 
+	UPROPERTY(VisibleAnywhere, Category = "Rhythm")
+	class URhythmInputComponent* RhythmInputComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* RhythmUpAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* RhythmDownAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* RhythmLeftAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* RhythmRightAction;
+
+	UFUNCTION(BlueprintCallable, Category = "Rhythm")
+	void EnableRhythmMode(ARhythmGameplayController* GameplayController, bool bEnable) const;
+
 public:
 	ARhythmHellCharacter();
-	
 
 protected:
-
-	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
 
-	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
-	
+
 	void Interact();
 
 	void RhythmHit(const FInputActionValue& Value);
@@ -71,7 +85,6 @@ protected:
 	void Pause();
 
 protected:
-
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<UUserWidget> VinylHUDClass;
 	UUserWidget* VinylHUDWidget;
@@ -93,7 +106,6 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
@@ -116,10 +128,10 @@ public:
 
 	void RemovePauseMenu();
 
+	void StoreAndLoad() const;
+
 private:
 	void SearchForNearbyInteractables(bool bInteract);
 
 	AActor* LastHighlightedActor = nullptr;
-
 };
-

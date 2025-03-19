@@ -11,6 +11,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Interactable.h"
+#include "RhythmGameInstance.h"
+#include "RhythmInputComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Blueprint/UserWidget.h"
 
@@ -18,6 +20,20 @@ DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 //////////////////////////////////////////////////////////////////////////
 // ARhythmHellCharacter
+
+void ARhythmHellCharacter::EnableRhythmMode(ARhythmGameplayController* GameplayController, const bool bEnable) const {
+	if (RhythmInputComponent) {
+		RhythmInputComponent->SetGameplayController(GameplayController);
+		RhythmInputComponent->SetInputEnabled(bEnable);
+
+		// Optionally disable/enable normal movement while in rhythm mode
+		if (bEnable) {
+			GetCharacterMovement()->DisableMovement();
+		} else {
+			GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+		}
+	}
+}
 
 ARhythmHellCharacter::ARhythmHellCharacter() {
 	// Set size for collision capsule
@@ -49,13 +65,16 @@ ARhythmHellCharacter::ARhythmHellCharacter() {
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
+	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+	// Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 
 	InteractionRange = 200.0f;
+
+	RhythmInputComponent = CreateDefaultSubobject<URhythmInputComponent>(TEXT("RhythmInputComponent"));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -66,7 +85,8 @@ void ARhythmHellCharacter::NotifyControllerChanged() {
 
 	// Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller)) {
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer())) {
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<
+			UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer())) {
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
@@ -75,7 +95,6 @@ void ARhythmHellCharacter::NotifyControllerChanged() {
 void ARhythmHellCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
-
 		// Jumping
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
@@ -86,18 +105,30 @@ void ARhythmHellCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ARhythmHellCharacter::Look);
 
-		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ARhythmHellCharacter::Interact);
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this,
+		                                   &ARhythmHellCharacter::Interact);
 
 		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this, &ARhythmHellCharacter::Pause);
+
+		if (RhythmInputComponent) {
+			RhythmInputComponent->UpAction = RhythmUpAction;
+			RhythmInputComponent->DownAction = RhythmDownAction;
+			RhythmInputComponent->LeftAction = RhythmLeftAction;
+			RhythmInputComponent->RightAction = RhythmRightAction;
+			RhythmInputComponent->BindInputActions(EnhancedInputComponent);
+		}
 	} else {
-		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
+		UE_LOG(LogTemplateCharacter, Error,
+		       TEXT(
+			       "'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."
+		       ), *GetNameSafe(this));
 	}
 }
 
 void ARhythmHellCharacter::BeginPlay() {
 	Super::BeginPlay();
 
-	if (VinylHUDClass) {
+	if (VinylHUDClass && GetWorld()->GetName() == "DefaultMap") {
 		VinylHUDWidget = CreateWidget<UUserWidget>(GetWorld(), VinylHUDClass);
 
 		if (VinylHUDWidget) {
@@ -118,7 +149,6 @@ void ARhythmHellCharacter::Interact() {
 void ARhythmHellCharacter::RhythmHit(const FInputActionValue& Value) {}
 
 void ARhythmHellCharacter::Pause() {
-
 	UE_LOG(LogTemp, Warning, TEXT("PauseD?"));
 
 	if (bHasPausedGame) {
@@ -130,17 +160,14 @@ void ARhythmHellCharacter::Pause() {
 		ShowPauseMenu();
 		bHasPausedGame = true;
 	}
-
 }
 
 void ARhythmHellCharacter::AttachVinylToCharacter(AVinylRecord* Vinyl) {
-
 	if (PickedUpVinyl) {
 		DetachVinylFromCharacter();
 	}
 
 	if (Vinyl && GetMesh()) {
-
 		PickedUpVinyl = Vinyl;
 		bIsCarryingVinyl = true;
 
@@ -148,7 +175,8 @@ void ARhythmHellCharacter::AttachVinylToCharacter(AVinylRecord* Vinyl) {
 			VinylRoot->SetSimulatePhysics(false);
 		}
 
-		PickedUpVinyl->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, VinylSocketName);
+		PickedUpVinyl->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+		                                 VinylSocketName);
 		PickedUpVinyl->SetActorEnableCollision(false);
 
 		FText VinylName = FText::FromString(*PickedUpVinyl->SongName);
@@ -159,13 +187,10 @@ void ARhythmHellCharacter::AttachVinylToCharacter(AVinylRecord* Vinyl) {
 			VinylHUDWidget->ProcessEvent(UpdateFunction, &VinylName);
 		}
 	}
-
 }
 
 void ARhythmHellCharacter::DetachVinylFromCharacter() {
-
 	if (PickedUpVinyl) {
-
 		bIsCarryingVinyl = false;
 
 		PickedUpVinyl->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
@@ -178,7 +203,6 @@ void ARhythmHellCharacter::DetachVinylFromCharacter() {
 
 		PickedUpVinyl = nullptr;
 	}
-
 }
 
 void ARhythmHellCharacter::ShowPauseMenu() {
@@ -196,12 +220,11 @@ void ARhythmHellCharacter::ShowPauseMenu() {
 		InputMode.SetWidgetToFocus(PauseMenuWidget->TakeWidget());
 		PlayerController->SetInputMode(InputMode);
 	}
-
 }
 
 void ARhythmHellCharacter::RemovePauseMenu() {
 	if (PauseMenuWidget) {
-		PauseMenuWidget->RemoveFromViewport();
+		PauseMenuWidget->RemoveFromParent();
 	}
 
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
@@ -212,6 +235,16 @@ void ARhythmHellCharacter::RemovePauseMenu() {
 		FInputModeGameOnly InputMode;
 		PlayerController->SetInputMode(InputMode);
 	}
+}
+
+void ARhythmHellCharacter::StoreAndLoad() const {
+	URhythmGameInstance* GameInst = Cast<URhythmGameInstance>(GetGameInstance());
+	// FString JSONPath = "/Game/JSONs/";
+	FString JSONPath = "C:/Projects/Unreal Engine/RhythmHell/Content/JSONs/";
+	JSONPath = JSONPath.Append(PickedUpVinyl->SongName.ToLower());
+	JSONPath = JSONPath.Append(".json");
+	GameInst->SetVinylJSON(JSONPath);
+	VinylHUDWidget->RemoveFromParent();
 }
 
 void ARhythmHellCharacter::SearchForNearbyInteractables(bool bInteract) {
@@ -226,12 +259,12 @@ void ARhythmHellCharacter::SearchForNearbyInteractables(bool bInteract) {
 
 	bool bPickedUpVinylThisAction = false;
 
-	if (GetWorld()->SweepMultiByChannel(HitResults, StartPoint, EndPoint, FQuat::Identity, ECC_GameTraceChannel1, Sphere, CollisionQueryParams)) {
+	if (GetWorld()->SweepMultiByChannel(HitResults, StartPoint, EndPoint, FQuat::Identity, ECC_GameTraceChannel1,
+	                                    Sphere, CollisionQueryParams)) {
 		AActor* CurrentHighlightedActor = nullptr;
 		for (const FHitResult& Hit : HitResults) {
 			if (AActor* HitActor = Hit.GetActor()) {
 				if (HitActor->GetClass()->ImplementsInterface(UInteractable::StaticClass())) {
-
 					IInteractable::Execute_Highlight(HitActor, true);
 					CurrentHighlightedActor = HitActor;
 
@@ -265,9 +298,7 @@ void ARhythmHellCharacter::SearchForNearbyInteractables(bool bInteract) {
 	}
 
 
-
 	DrawDebugSphere(GetWorld(), StartPoint, Sphere.GetSphereRadius(), 12, FColor::Red, false, 0.0f);
-
 }
 
 void ARhythmHellCharacter::Move(const FInputActionValue& Value) {

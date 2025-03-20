@@ -1,0 +1,109 @@
+{
+  "levelName": "New Level",
+  "audioPath": "/Game/StarterContent/Audio/Starter_Music01.Starter_Music01",
+  "bpm": 120,
+  "startOffset": 0,
+  "difficulty": "MEDIUM",
+  "hits": [
+    {
+      "timestamp": 1159,
+      "direction": "Up",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 1346,
+      "direction": "Down",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 1569,
+      "direction": "Left",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 1662.5,
+      "direction": "Right",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 2322.5,
+      "direction": "Left",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 2398,
+      "direction": "Down",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 2474,
+      "direction": "Up",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 2576.5,
+      "direction": "Right",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 2621,
+      "direction": "Right",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 2656.5,
+      "direction": "Right",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 2844,
+      "direction": "Down",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 2911,
+      "direction": "Up",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 2991,
+      "direction": "Down",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 3053.5,
+      "direction": "Left",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 8804,
+      "direction": "Right",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 8830.5,
+      "direction": "Right",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 8911,
+      "direction": "Left",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 8951,
+      "direction": "Left",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 9062.5,
+      "direction": "Down",
+      "hitType": "BASIC"
+    },
+    {
+      "timestamp": 9098,
+      "direction": "Down",
+      "hitType": "BASIC"
+    }
+  ]
+}

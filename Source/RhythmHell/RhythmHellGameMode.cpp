@@ -1,15 +1,11 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "RhythmHellGameMode.h"
-#include "RhythmHellCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
 ARhythmHellGameMode::ARhythmHellGameMode() {
-	// set default pawn class to our Blueprinted character
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/Extras/ThirdPerson/Blueprints/BP_ThirdPersonCharacter"));
-	if (PlayerPawnBPClass.Class != NULL) {
+	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/Blueprints/Player/ThirdPerson/Blueprints/BP_ThirdPersonCharacter"));
+	if (PlayerPawnBPClass.Class != nullptr) {
 		DefaultPawnClass = PlayerPawnBPClass.Class;
-	} else {
-		UE_LOG(LogTemp, Warning, TEXT("NULL"));
 	}
 }

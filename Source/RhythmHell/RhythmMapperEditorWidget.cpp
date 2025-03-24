@@ -135,7 +135,7 @@ void URhythmMapperEditorWidget::EndLongHit(const FString& Direction) {
 		return;
 	}
 
-	float StartTime = LongHitsInProgress[Direction];
+	const float StartTime = LongHitsInProgress[Direction];
 
 	LongHitsInProgress.Remove(Direction);
 
@@ -155,7 +155,7 @@ void URhythmMapperEditorWidget::EndLongHit(const FString& Direction) {
 
 void URhythmMapperEditorWidget::RemoveHit(int32 Index) {
 	if (Hits.IsValidIndex(Index)) {
-		FRhythmHit Hit = Hits[Index];
+		const FRhythmHit Hit = Hits[Index];
 
 		Hits.RemoveAt(Index);
 
@@ -164,7 +164,7 @@ void URhythmMapperEditorWidget::RemoveHit(int32 Index) {
 }
 
 void URhythmMapperEditorWidget::ClearAllHits() {
-	int32 NumHits = Hits.Num();
+	const int32 NumHits = Hits.Num();
 
 	Hits.Empty();
 
@@ -174,7 +174,7 @@ void URhythmMapperEditorWidget::ClearAllHits() {
 }
 
 bool URhythmMapperEditorWidget::SaveLevelToJSON(const FString& FilePath) {
-	TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
+	const TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
 
 	JsonObject->SetStringField("levelName", LevelName);
 	JsonObject->SetStringField("audioPath", SongAsset ? SongAsset->GetPathName() : "");
@@ -248,9 +248,9 @@ void URhythmMapperEditorWidget::AutoPlaceHits(int32 BeatsPerMeasure, int32 NumMe
 
 	ClearAllHits();
 
-	float BeatDuration = 60.0f / BPM;
+	const float BeatDuration = 60.0f / BPM;
 
-	int32 TotalBeats = BeatsPerMeasure * NumMeasures;
+	const int32 TotalBeats = BeatsPerMeasure * NumMeasures;
 
 	TArray<FString> Directions = {"Up", "Down", "Left", "Right"};
 
@@ -278,19 +278,19 @@ void URhythmMapperEditorWidget::QuantizeHits() {
 		return;
 	}
 
-	float BeatDuration = 60.0f / BPM;
+	const float BeatDuration = 60.0f / BPM;
 
 	for (FRhythmHit& Hit : Hits) {
-		float AdjustedTime = Hit.TimeStamp - StartOffset;
+		const float AdjustedTime = Hit.TimeStamp - StartOffset;
 
-		int32 NearestBeat = FMath::RoundToInt(AdjustedTime / BeatDuration);
+		const int32 NearestBeat = FMath::RoundToInt(AdjustedTime / BeatDuration);
 
 		Hit.TimeStamp = StartOffset + (NearestBeat * BeatDuration);
 
 		if (Hit.HitType == RhythmHitMarking::LONG_START) {
-			float AdjustedEndTime = Hit.EndTimeStamp - StartOffset;
+			const float AdjustedEndTime = Hit.EndTimeStamp - StartOffset;
 
-			int32 NearestEndBeat = FMath::RoundToInt(AdjustedEndTime / BeatDuration);
+			const int32 NearestEndBeat = FMath::RoundToInt(AdjustedEndTime / BeatDuration);
 
 			Hit.EndTimeStamp = StartOffset + (NearestEndBeat * BeatDuration);
 		}
@@ -340,8 +340,8 @@ bool URhythmMapperEditorWidget::LoadLevelFromJSON(const FString& FilePath) {
 	}
 
 	TSharedPtr<FJsonObject> JsonObject;
-	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(JsonString);
-	if (!FJsonSerializer::Deserialize(Reader, JsonObject) || !JsonObject.IsValid()) {
+	if (const TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(JsonString); !
+		FJsonSerializer::Deserialize(Reader, JsonObject) || !JsonObject.IsValid()) {
 		UE_LOG(LogTemp, Error, TEXT("Failed to parse rhythm level JSON: %s"), *FilePath);
 		return false;
 	}
@@ -350,8 +350,7 @@ bool URhythmMapperEditorWidget::LoadLevelFromJSON(const FString& FilePath) {
 
 	LevelName = JsonObject->GetStringField(TEXT("levelName"));
 
-	FString AudioPath = JsonObject->GetStringField(TEXT("audioPath"));
-	if (!AudioPath.IsEmpty()) {
+	if (const FString AudioPath = JsonObject->GetStringField(TEXT("audioPath")); !AudioPath.IsEmpty()) {
 		SongAsset = LoadObject<USoundWave>(nullptr, *AudioPath);
 		if (SongAsset) {
 			LoadSong(SongAsset);
@@ -361,8 +360,7 @@ bool URhythmMapperEditorWidget::LoadLevelFromJSON(const FString& FilePath) {
 	BPM = JsonObject->GetNumberField(TEXT("bpm"));
 	StartOffset = JsonObject->GetNumberField(TEXT("startOffset"));
 
-	FString DifficultyStr = JsonObject->GetStringField(TEXT("difficulty"));
-	if (DifficultyStr == "EASY")
+	if (const FString DifficultyStr = JsonObject->GetStringField(TEXT("difficulty")); DifficultyStr == "EASY")
 		LevelDifficulty = Difficulty::EASY;
 	else if (DifficultyStr == "MEDIUM")
 		LevelDifficulty = Difficulty::MEDIUM;
@@ -371,8 +369,7 @@ bool URhythmMapperEditorWidget::LoadLevelFromJSON(const FString& FilePath) {
 	else if (DifficultyStr == "HELL")
 		LevelDifficulty = Difficulty::HELL;
 
-	const TArray<TSharedPtr<FJsonValue>>* HitsArray;
-	if (JsonObject->TryGetArrayField(TEXT("hits"), HitsArray)) {
+	if (const TArray<TSharedPtr<FJsonValue>>* HitsArray; JsonObject->TryGetArrayField(TEXT("hits"), HitsArray)) {
 		for (const TSharedPtr<FJsonValue>& HitValue : *HitsArray) {
 			const TSharedPtr<FJsonObject>& HitObject = HitValue->AsObject();
 

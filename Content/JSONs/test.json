@@ -1,109 +1,294 @@
 {
-  "levelName": "New Level",
-  "audioPath": "/Game/StarterContent/Audio/Starter_Music01.Starter_Music01",
-  "bpm": 120,
-  "startOffset": 0,
-  "difficulty": "MEDIUM",
-  "hits": [
-    {
-      "timestamp": 1159,
-      "direction": "Up",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 1346,
-      "direction": "Down",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 1569,
-      "direction": "Left",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 1662.5,
-      "direction": "Right",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 2322.5,
-      "direction": "Left",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 2398,
-      "direction": "Down",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 2474,
-      "direction": "Up",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 2576.5,
-      "direction": "Right",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 2621,
-      "direction": "Right",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 2656.5,
-      "direction": "Right",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 2844,
-      "direction": "Down",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 2911,
-      "direction": "Up",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 2991,
-      "direction": "Down",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 3053.5,
-      "direction": "Left",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 8804,
-      "direction": "Right",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 8830.5,
-      "direction": "Right",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 8911,
-      "direction": "Left",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 8951,
-      "direction": "Left",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 9062.5,
-      "direction": "Down",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 9098,
-      "direction": "Down",
-      "hitType": "BASIC"
-    }
-  ]
+	"levelName": "New Level",
+	"audioPath": "/Game/StarterContent/Audio/Starter_Music01.Starter_Music01",
+	"bpm": 120,
+	"startOffset": 0,
+	"difficulty": "MEDIUM",
+	"hits": [
+		{
+			"timestamp": 1150,
+			"direction": "Up",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 1319.5,
+			"direction": "Left",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 1386.5,
+			"direction": "Down",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 1444.5,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 1832,
+			"direction": "Up",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 1890,
+			"direction": "Left",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 1925.5,
+			"direction": "Down",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 1966,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2010.5,
+			"direction": "Up",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2055,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2224.5,
+			"direction": "Left",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2340.5,
+			"direction": "Up",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2416,
+			"direction": "Down",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2443,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2478.5,
+			"direction": "Up",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2487.5,
+			"direction": "Down",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2509.5,
+			"direction": "Left",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2532,
+			"direction": "Down",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2558.5,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2581,
+			"direction": "Up",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2603.5,
+			"direction": "Left",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2625.5,
+			"direction": "Up",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2634.5,
+			"direction": "Down",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2643.5,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2719,
+			"direction": "Down",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2723.5,
+			"direction": "Up",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2750.5,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2772.5,
+			"direction": "Left",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2777,
+			"direction": "Down",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2804,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2826,
+			"direction": "Left",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2835,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2835,
+			"direction": "Down",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2862,
+			"direction": "Left",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2875,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2879.5,
+			"direction": "Down",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2884,
+			"direction": "Up",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2902,
+			"direction": "Left",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2915.5,
+			"direction": "Up",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2924,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2946.5,
+			"direction": "Left",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2955.5,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2960,
+			"direction": "Up",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2977.5,
+			"direction": "Left",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2995.5,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 3000,
+			"direction": "Down",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 3022.5,
+			"direction": "Left",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 3026.5,
+			"direction": "Up",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 3031,
+			"direction": "Down",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 3044.5,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 3062.5,
+			"direction": "Up",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 3062.5,
+			"direction": "Left",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 3084.5,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 3111.5,
+			"direction": "Down",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 3116,
+			"direction": "Left",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 3138,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 3160.5,
+			"direction": "Left",
+			"hitType": "BASIC"
+		}
+	]
 }

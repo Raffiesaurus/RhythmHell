@@ -200,7 +200,7 @@ bool URhythmMapperEditorWidget::SaveLevelToJSON(const FString& FilePath) {
 
 	TArray<TSharedPtr<FJsonValue>> HitsArray;
 	for (const FRhythmHit& Hit : Hits) {
-		TSharedPtr<FJsonObject> HitObject = MakeShareable(new FJsonObject);
+		const TSharedPtr<FJsonObject> HitObject = MakeShareable(new FJsonObject);
 
 		HitObject->SetNumberField("timestamp", Hit.TimeStamp);
 		HitObject->SetStringField("direction", Hit.Direction);
@@ -377,8 +377,7 @@ bool URhythmMapperEditorWidget::LoadLevelFromJSON(const FString& FilePath) {
 			Hit.TimeStamp = HitObject->GetNumberField(TEXT("timestamp"));
 			Hit.Direction = HitObject->GetStringField(TEXT("direction"));
 
-			FString HitTypeStr = HitObject->GetStringField(TEXT("hitType"));
-			if (HitTypeStr == "BASIC")
+			if (FString HitTypeStr = HitObject->GetStringField(TEXT("hitType")); HitTypeStr == "BASIC")
 				Hit.HitType = RhythmHitMarking::BASIC;
 			else if (HitTypeStr == "LONG_START")
 				Hit.HitType = RhythmHitMarking::LONG_START;

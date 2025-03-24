@@ -182,8 +182,7 @@ void ARhythmHellCharacter::AttachVinylToCharacter(AVinylRecord* Vinyl) {
 		FText VinylName = FText::FromString(*PickedUpVinyl->SongName);
 		UE_LOG(LogTemp, Log, TEXT("Picked up a vinyl"));
 
-		UFunction* UpdateFunction = VinylHUDWidget->FindFunction(TEXT("SetPickedUpVinyl"));
-		if (UpdateFunction) {
+		if (UFunction* UpdateFunction = VinylHUDWidget->FindFunction(TEXT("SetPickedUpVinyl"))) {
 			VinylHUDWidget->ProcessEvent(UpdateFunction, &VinylName);
 		}
 	}
@@ -211,9 +210,7 @@ void ARhythmHellCharacter::ShowPauseMenu() {
 	}
 	PauseMenuWidget->AddToViewport();
 
-	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-
-	if (PlayerController) {
+	if (APlayerController* PlayerController = GetWorld()->GetFirstPlayerController()) {
 		PlayerController->bShowMouseCursor = true;
 
 		FInputModeUIOnly InputMode;
@@ -227,9 +224,7 @@ void ARhythmHellCharacter::RemovePauseMenu() {
 		PauseMenuWidget->RemoveFromParent();
 	}
 
-	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-
-	if (PlayerController) {
+	if (APlayerController* PlayerController = GetWorld()->GetFirstPlayerController()) {
 		PlayerController->bShowMouseCursor = false;
 
 		FInputModeGameOnly InputMode;
@@ -239,28 +234,24 @@ void ARhythmHellCharacter::RemovePauseMenu() {
 
 void ARhythmHellCharacter::StoreAndLoad() const {
 	URhythmGameInstance* GameInst = Cast<URhythmGameInstance>(GetGameInstance());
-	// FString JSONPath = "/Game/JSONs/";
-	FString JSONPath = "C:/Projects/Unreal Engine/RhythmHell/Content/JSONs/";
-	JSONPath = JSONPath.Append(PickedUpVinyl->SongName.ToLower());
-	JSONPath = JSONPath.Append(".json");
+	const FString JSONPath = FPaths::ProjectContentDir() + TEXT("JSONs/") + PickedUpVinyl->SongName.ToLower() +
+		TEXT(".json");
 	GameInst->SetVinylJSON(JSONPath);
 	VinylHUDWidget->RemoveFromParent();
 }
 
 void ARhythmHellCharacter::SearchForNearbyInteractables(bool bInteract) {
-	FVector StartPoint = GetActorLocation();
-	FVector EndPoint = StartPoint + (GetActorForwardVector() * InteractionRange);
+	const FVector StartPoint = GetActorLocation();
+	const FVector EndPoint = StartPoint + (GetActorForwardVector() * InteractionRange);
 
-	TArray<FHitResult> HitResults;
-	FCollisionShape Sphere = FCollisionShape::MakeSphere(InteractionRange);
+	const FCollisionShape Sphere = FCollisionShape::MakeSphere(InteractionRange);
 
 	FCollisionQueryParams CollisionQueryParams;
 	CollisionQueryParams.AddIgnoredActor(this);
 
-	bool bPickedUpVinylThisAction = false;
-
-	if (GetWorld()->SweepMultiByChannel(HitResults, StartPoint, EndPoint, FQuat::Identity, ECC_GameTraceChannel1,
-	                                    Sphere, CollisionQueryParams)) {
+	if (TArray<FHitResult> HitResults; GetWorld()->SweepMultiByChannel(HitResults, StartPoint, EndPoint, FQuat::Identity, ECC_GameTraceChannel1,
+	                                                                   Sphere, CollisionQueryParams)) {
+		bool bPickedUpVinylThisAction = false;
 		AActor* CurrentHighlightedActor = nullptr;
 		for (const FHitResult& Hit : HitResults) {
 			if (AActor* HitActor = Hit.GetActor()) {
@@ -303,7 +294,7 @@ void ARhythmHellCharacter::SearchForNearbyInteractables(bool bInteract) {
 
 void ARhythmHellCharacter::Move(const FInputActionValue& Value) {
 	// input is a Vector2D
-	FVector2D MovementVector = Value.Get<FVector2D>();
+	const FVector2D MovementVector = Value.Get<FVector2D>();
 
 	if (Controller != nullptr) {
 		// find out which way is forward
@@ -324,7 +315,7 @@ void ARhythmHellCharacter::Move(const FInputActionValue& Value) {
 
 void ARhythmHellCharacter::Look(const FInputActionValue& Value) {
 	// input is a Vector2D
-	FVector2D LookAxisVector = Value.Get<FVector2D>();
+	const FVector2D LookAxisVector = Value.Get<FVector2D>();
 
 	if (Controller != nullptr) {
 		// add yaw and pitch input to controller

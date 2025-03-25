@@ -1,138 +1,185 @@
 {
-  "levelName": "Tutorial Level",
-  "audioPath": "/Game/Audio/Music/Collapse01",
-  "bpm": 120,
-  "startOffset": 0.5,
-  "difficulty": "EASY",
-  "hits": [
-    {
-      "timestamp": 1.0,
-      "direction": "Up",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 2.0,
-      "direction": "Down",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 3.0,
-      "direction": "Left",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 4.0,
-      "direction": "Right",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 5.0,
-      "direction": "Up",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 5.5,
-      "direction": "Down",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 6.0,
-      "direction": "Left",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 6.5,
-      "direction": "Right",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 7.0,
-      "direction": "Up",
-      "hitType": "LONG_START",
-      "endTimestamp": 8.0
-    },
-    {
-      "timestamp": 9.0,
-      "direction": "Down",
-      "hitType": "LONG_START",
-      "endTimestamp": 10.0
-    },
-    {
-      "timestamp": 11.0,
-      "direction": "Left",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 11.5,
-      "direction": "Right",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 12.0,
-      "direction": "Up",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 12.5,
-      "direction": "Down",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 13.0,
-      "direction": "Left",
-      "hitType": "LONG_START",
-      "endTimestamp": 14.0
-    },
-    {
-      "timestamp": 15.0,
-      "direction": "Right",
-      "hitType": "LONG_START",
-      "endTimestamp": 16.0
-    },
-    {
-      "timestamp": 17.0,
-      "direction": "Up",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 17.25,
-      "direction": "Down",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 17.5,
-      "direction": "Left",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 17.75,
-      "direction": "Right",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 18.0,
-      "direction": "Up",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 18.5,
-      "direction": "Down",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 19.0,
-      "direction": "Left",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 19.5,
-      "direction": "Right",
-      "hitType": "BASIC"
-    },
-    {
-      "timestamp": 20.0,
-      "direction": "Up",
-      "hitType": "BASIC"
-    }
-  ]
+	"levelName": "New Level",
+	"audioPath": "/Game/StarterContent/Audio/Starter_Music01.Starter_Music01",
+	"bpm": 120,
+	"startOffset": 0,
+	"difficulty": "MEDIUM",
+	"hits": [
+		{
+			"timestamp": 824.5,
+			"direction": "Up",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 882.5,
+			"direction": "Left",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 967.5,
+			"direction": "Down",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 1034,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 1181.5,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 1239,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 1279.5,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 1346,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 1506.5,
+			"direction": "Up",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 1578,
+			"direction": "Left",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 1609,
+			"direction": "Down",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 1698.5,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 1774,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 1859,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2162,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2460.5,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2706,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 2817,
+			"direction": "Up",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 3031,
+			"direction": "Right",
+			"hitType": "LONG_START",
+			"endTimestamp": 3535
+		},
+		{
+			"timestamp": 3191.5,
+			"direction": "Left",
+			"hitType": "LONG_START",
+			"endTimestamp": 3610.5
+		},
+		{
+			"timestamp": 3771,
+			"direction": "Down",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 3811.5,
+			"direction": "Down",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 3896,
+			"direction": "Down",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 3958.5,
+			"direction": "Up",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 4007.5,
+			"direction": "Left",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 4096.5,
+			"direction": "Left",
+			"hitType": "LONG_START",
+			"endTimestamp": 4671.5
+		},
+		{
+			"timestamp": 4154.5,
+			"direction": "Up",
+			"hitType": "LONG_START",
+			"endTimestamp": 4734
+		},
+		{
+			"timestamp": 4270.5,
+			"direction": "Down",
+			"hitType": "LONG_START",
+			"endTimestamp": 4654
+		},
+		{
+			"timestamp": 4359.5,
+			"direction": "Right",
+			"hitType": "LONG_START",
+			"endTimestamp": 4613.5
+		},
+		{
+			"timestamp": 5465,
+			"direction": "Up",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 5505,
+			"direction": "Left",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 5532,
+			"direction": "Down",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 5550,
+			"direction": "Right",
+			"hitType": "BASIC"
+		},
+		{
+			"timestamp": 5585.5,
+			"direction": "Up",
+			"hitType": "BASIC"
+		}
+	]
 }

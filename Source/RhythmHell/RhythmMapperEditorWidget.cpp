@@ -173,7 +173,7 @@ void URhythmMapperEditorWidget::ClearAllHits() {
 	UE_LOG(LogTemp, Log, TEXT("Cleared all hits (%d total)"), NumHits);
 }
 
-bool URhythmMapperEditorWidget::SaveLevelToJSON(const FString& FilePath) {
+bool URhythmMapperEditorWidget::SaveLevelToJSON(const FString& FileName) {
 	const TSharedPtr<FJsonObject> JsonObject = MakeShareable(new FJsonObject);
 
 	JsonObject->SetStringField("levelName", LevelName);
@@ -228,14 +228,14 @@ bool URhythmMapperEditorWidget::SaveLevelToJSON(const FString& FilePath) {
 	JsonObject->SetArrayField("hits", HitsArray);
 
 	FString OutputString;
-	TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&OutputString);
+	const TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&OutputString);
 	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
 
-	if (FFileHelper::SaveStringToFile(OutputString, *FilePath)) {
-		UE_LOG(LogTemp, Log, TEXT("Saved level to %s"), *FilePath);
+	if (const FString FileLocation = FPaths::ProjectContentDir() + TEXT("JSONs/") + FileName; FFileHelper::SaveStringToFile(OutputString, *FileLocation)) {
+		UE_LOG(LogTemp, Log, TEXT("Saved level to %s"), *FileLocation);
 		return true;
 	} else {
-		UE_LOG(LogTemp, Error, TEXT("Failed to save level to %s"), *FilePath);
+		UE_LOG(LogTemp, Error, TEXT("Failed to save level to %s"), *FileLocation);
 		return false;
 	}
 }
@@ -332,17 +332,18 @@ bool URhythmMapperEditorWidget::IsSongLoaded() const {
 	return (SongAsset != nullptr && AudioComponent != nullptr);
 }
 
-bool URhythmMapperEditorWidget::LoadLevelFromJSON(const FString& FilePath) {
+bool URhythmMapperEditorWidget::LoadLevelFromJSON(const FString& FileName) {
 	FString JsonString;
-	if (!FFileHelper::LoadFileToString(JsonString, *FilePath)) {
-		UE_LOG(LogTemp, Error, TEXT("Failed to load rhythm level file: %s"), *FilePath);
+	const FString FullPath = FPaths::ProjectContentDir() + TEXT("JSONs/") + FileName;
+	if (!FFileHelper::LoadFileToString(JsonString, *FullPath)) {
+		UE_LOG(LogTemp, Error, TEXT("Failed to load rhythm level file: %s"), *FullPath);
 		return false;
 	}
 
 	TSharedPtr<FJsonObject> JsonObject;
 	if (const TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(JsonString); !
 		FJsonSerializer::Deserialize(Reader, JsonObject) || !JsonObject.IsValid()) {
-		UE_LOG(LogTemp, Error, TEXT("Failed to parse rhythm level JSON: %s"), *FilePath);
+		UE_LOG(LogTemp, Error, TEXT("Failed to parse rhythm level JSON: %s"), *FullPath);
 		return false;
 	}
 
@@ -394,6 +395,6 @@ bool URhythmMapperEditorWidget::LoadLevelFromJSON(const FString& FilePath) {
 
 	SortHits();
 
-	UE_LOG(LogTemp, Log, TEXT("Loaded level from %s with %d hits"), *FilePath, Hits.Num());
+	UE_LOG(LogTemp, Log, TEXT("Loaded level from %s with %d hits"), *FullPath, Hits.Num());
 	return true;
 }

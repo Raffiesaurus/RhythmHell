@@ -87,10 +87,10 @@ public:
 	void ClearAllHits();
 
 	UFUNCTION(BlueprintCallable, Category = "File")
-	bool SaveLevelToJSON(const FString& FilePath);
+	bool SaveLevelToJSON(const FString& FileName);
 
 	UFUNCTION(BlueprintCallable, Category = "File")
-	bool LoadLevelFromJSON(const FString& FilePath);
+	bool LoadLevelFromJSON(const FString& FileName);
 
 	UFUNCTION(BlueprintCallable, Category = "Editing")
 	void AutoPlaceHits(int32 BeatsPerMeasure, int32 NumMeasures);

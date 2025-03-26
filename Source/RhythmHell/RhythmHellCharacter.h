@@ -66,11 +66,11 @@ class ARhythmHellCharacter : public ACharacter {
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* RhythmRightAction;
 
-	UFUNCTION(BlueprintCallable, Category = "Rhythm")
-	void EnableRhythmMode(ARhythmGameplayController* GameplayController, bool bEnable) const;
-
 public:
 	ARhythmHellCharacter();
+
+	UFUNCTION(BlueprintCallable, Category = "Rhythm")
+	void EnableRhythmMode(ARhythmGameplayController* GameplayController, bool bEnable) const;
 
 protected:
 	void Move(const FInputActionValue& Value);
@@ -87,6 +87,8 @@ protected:
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<UUserWidget> VinylHUDClass;
+
+	UPROPERTY()
 	UUserWidget* VinylHUDWidget;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Attachments")
@@ -97,6 +99,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<UUserWidget> PauseMenuWidgetClass;
+
+	UPROPERTY()
 	UUserWidget* PauseMenuWidget;
 
 	virtual void NotifyControllerChanged() override;
@@ -133,5 +137,6 @@ public:
 private:
 	void SearchForNearbyInteractables(bool bInteract);
 
+	UPROPERTY()
 	AActor* LastHighlightedActor = nullptr;
 };

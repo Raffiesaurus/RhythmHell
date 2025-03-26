@@ -5,6 +5,8 @@
 #include "Blueprint/WidgetTree.h"
 #include "Animation/WidgetAnimation.h"
 #include "Components/CanvasPanelSlot.h"
+#include "Kismet/GameplayStatics.h"
+#include "Blueprint/UserWidget.h"
 
 URhythmGameplayWidget::URhythmGameplayWidget(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer), GameplayController(nullptr), UpLanePanel(nullptr), DownLanePanel(nullptr),
@@ -12,7 +14,7 @@ URhythmGameplayWidget::URhythmGameplayWidget(const FObjectInitializer& ObjectIni
 	  RightLanePanel(nullptr),
 	  ScoreText(nullptr), ComboText(nullptr),
 	  ProgressBar(nullptr), TotalDuration(0) {
-	NoteSpawnLeadTime = 2.0f; // 2 seconds of travel time
+	NoteSpawnLeadTime = 2.0f;
 	CurrentTime = 0.0f;
 	bIsGameplayActive = false;
 	NextSpawnIndex = 0;
@@ -46,6 +48,7 @@ void URhythmGameplayWidget::NativeTick(const FGeometry& MyGeometry, float InDelt
 			if (URhythmNote* NoteWidget = SpawnNoteWidget(NextHit)) {
 				ActiveNotes.Add(NextSpawnIndex, NoteWidget);
 			}
+			NextSpawnIndex++;
 		}
 	}
 
@@ -55,7 +58,7 @@ void URhythmGameplayWidget::NativeTick(const FGeometry& MyGeometry, float InDelt
 		}
 	}
 
-	UpdateProgressBar();
+	UpdateLongNotes();
 }
 
 void URhythmGameplayWidget::SetGameplayController(ARhythmGameplayController* InController) {
@@ -89,11 +92,15 @@ void URhythmGameplayWidget::InitializeGameplayUI(const FRhythmLevel& Level) {
 	if (ProgressBar) {
 		ProgressBar->SetPercent(0.0f);
 	}
+
+	SetupLanes();
 }
 
 void URhythmGameplayWidget::ProcessInput(const FString& Direction) {
 	if (GameplayController && bIsGameplayActive) {
 		GameplayController->ProcessRhythmInput(Direction);
+
+		ShowInputFeedback(Direction);
 	}
 }
 
@@ -124,7 +131,7 @@ URhythmNote* URhythmGameplayWidget::SpawnNoteWidget(const FRhythmHit& Hit) {
 
 	if (UCanvasPanelSlot* PanelSlot = LanePanel->AddChildToCanvas(NoteWidget)) {
 		PanelSlot->SetAlignment(FVector2D(0.5f, 0.0f));
-		PanelSlot->SetSize(FVector2D(64.0f, 64.0f)); // Default size, can be adjusted in the widget
+		PanelSlot->SetSize(FVector2D(64.0f, 64.0f));
 	}
 
 	NoteWidget->InitializeNote(
@@ -138,10 +145,25 @@ URhythmNote* URhythmGameplayWidget::SpawnNoteWidget(const FRhythmHit& Hit) {
 	return NoteWidget;
 }
 
+void URhythmGameplayWidget::UpdateLongNotes() {
+	for (auto It = ActiveNotes.CreateIterator(); It; ++It) {
+		if (!GameplayController->CurrentLevel.Hits.IsValidIndex(It.Key())) {
+			continue;
+		}
+
+		if (const FRhythmHit& Hit = GameplayController->CurrentLevel.Hits[It.Key()]; Hit.HitType == RhythmHitMarking::LONG_START) {
+			if (URhythmNote* NoteWidget = It.Value()) {
+				if (CurrentTime > Hit.EndTimeStamp + GameplayController->GoodHitWindow) {
+					It.RemoveCurrent();
+				}
+			}
+		}
+	}
+}
+
 void URhythmGameplayWidget::OnRhythmHitResult(ERhythmHitResult Result, const FString& Direction) {
 	for (auto It = ActiveNotes.CreateIterator(); It; ++It) {
-		const FRhythmHit& Hit = GameplayController->CurrentLevel.Hits[It.Key()];
-		if (Hit.Direction == Direction && FMath::Abs(Hit.TimeStamp - CurrentTime) <= GameplayController->GoodHitWindow *
+		if (const FRhythmHit& Hit = GameplayController->CurrentLevel.Hits[It.Key()]; Hit.Direction == Direction && FMath::Abs(Hit.TimeStamp - CurrentTime) <= GameplayController->GoodHitWindow *
 			1.5f) {
 			if (It.Value()) {
 				FString ResultText;
@@ -194,5 +216,28 @@ void URhythmGameplayWidget::OnLevelComplete(int32 TotalScore, int32 MaxCombo, co
 }
 
 void URhythmGameplayWidget::OnAudioPlayBackPercent(const USoundWave* SoundWave, const float Percentage) {
+	if (ProgressBar) {
+		ProgressBar->SetPercent(Percentage);
+	}
 	CurrentTime = Percentage * TotalDuration;
+}
+
+void URhythmGameplayWidget::SetupLanes_Implementation() {
+	// Blueprint implementable function to set up lanes based on game settings
+	// Default implementation does nothing - override in Blueprint
+}
+
+void URhythmGameplayWidget::ShowInputFeedback_Implementation(const FString& Direction) {
+	// Blueprint implementable function to show input feedback
+	// Default implementation does nothing - override in Blueprint
+}
+
+void URhythmGameplayWidget::ShowHitResult_Implementation(ERhythmHitResult Result, const FString& Direction) {
+	// Blueprint implementable function to show hit result feedback
+	// Default implementation does nothing - override in Blueprint
+}
+
+void URhythmGameplayWidget::ShowLevelComplete_Implementation(int32 TotalScore, int32 MaxCombo, const FString& Rank) {
+	// Blueprint implementable function to show level complete screen
+	// Default implementation does nothing - override in Blueprint
 }

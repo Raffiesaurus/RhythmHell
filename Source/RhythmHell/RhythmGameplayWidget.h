@@ -59,9 +59,10 @@ protected:
 	UPROPERTY()
 	TMap<int32, URhythmNote*> ActiveNotes;
 
+	UPROPERTY(BlueprintReadOnly)
 	float CurrentTime;
 	float TotalDuration;
-	
+
 	bool bIsGameplayActive;
 
 	int32 NextSpawnIndex;
@@ -72,8 +73,8 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Rhythm UI")
 	URhythmNote* SpawnNoteWidget(const FRhythmHit& Hit);
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Rhythm UI")
-	void UpdateProgressBar();
+	UFUNCTION(BlueprintCallable, Category = "Rhythm UI")
+	void UpdateLongNotes();
 
 	UFUNCTION()
 	void OnRhythmHitResult(ERhythmHitResult Result, const FString& Direction);
@@ -84,11 +85,21 @@ protected:
 	UFUNCTION()
 	void OnLevelComplete(int32 TotalScore, int32 MaxCombo, const FString& Rank);
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Rhythm UI")
-	void ShowHitResult(ERhythmHitResult Result, const FString& Direction);
+	UFUNCTION(BlueprintNativeEvent, Category = "Rhythm UI")
+	void SetupLanes();
+	virtual void SetupLanes_Implementation();
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Rhythm UI")
+	UFUNCTION(BlueprintNativeEvent, Category = "Rhythm UI")
+	void ShowInputFeedback(const FString& Direction);
+	virtual void ShowInputFeedback_Implementation(const FString& Direction);
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Rhythm UI")
+	void ShowHitResult(ERhythmHitResult Result, const FString& Direction);
+	virtual void ShowHitResult_Implementation(ERhythmHitResult Result, const FString& Direction);
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Rhythm UI")
 	void ShowLevelComplete(int32 TotalScore, int32 MaxCombo, const FString& Rank);
+	virtual void ShowLevelComplete_Implementation(int32 TotalScore, int32 MaxCombo, const FString& Rank);
 
 	UFUNCTION()
 	void OnAudioPlayBackPercent(const USoundWave* SoundWave, const float Percentage);

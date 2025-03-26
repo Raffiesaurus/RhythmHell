@@ -109,7 +109,7 @@ bool ARhythmGameplayController::LoadLevelFromJSON(const FString& FilePath) {
 		return false;
 	}
 
-	UE_LOG(LogTemp, Log, TEXT("Successfully loaded rhythm level: %s"), *CurrentLevel.LevelName);
+	UE_LOG(LogTemp, Warning, TEXT("Successfully loaded rhythm level: %s"), *CurrentLevel.LevelName);
 	return true;
 }
 
@@ -125,7 +125,7 @@ void ARhythmGameplayController::StartLevel() {
 	bIsPlaying = true;
 	bIsPaused = false;
 
-	UE_LOG(LogTemp, Log, TEXT("Starting rhythm level: %s"), *CurrentLevel.LevelName);
+	UE_LOG(LogTemp, Warning, TEXT("Starting rhythm level: %s"), *CurrentLevel.LevelName);
 }
 
 void ARhythmGameplayController::PauseLevel() {
@@ -133,7 +133,7 @@ void ARhythmGameplayController::PauseLevel() {
 		bIsPaused = true;
 		AudioComponent->SetPaused(bIsPaused);
 
-		UE_LOG(LogTemp, Log, TEXT("Paused rhythm level"));
+		UE_LOG(LogTemp, Warning, TEXT("Paused rhythm level"));
 	}
 }
 
@@ -142,7 +142,7 @@ void ARhythmGameplayController::ResumeLevel() {
 		bIsPaused = false;
 		AudioComponent->SetPaused(bIsPaused);
 
-		UE_LOG(LogTemp, Log, TEXT("Resumed rhythm level"));
+		UE_LOG(LogTemp, Warning, TEXT("Resumed rhythm level"));
 	}
 }
 
@@ -155,7 +155,7 @@ void ARhythmGameplayController::EndLevel() {
 
 		OnLevelComplete.Broadcast(TotalScore, MaxCombo, Rank);
 
-		UE_LOG(LogTemp, Log, TEXT("Completed rhythm level: %s, Score: %d, Max Combo: %d, Rank: %s"),
+		UE_LOG(LogTemp, Warning, TEXT("Completed rhythm level: %s, Score: %d, Max Combo: %d, Rank: %s"),
 		       *CurrentLevel.LevelName, TotalScore, MaxCombo, *Rank);
 	}
 }

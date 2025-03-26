@@ -23,6 +23,9 @@ public:
 	                    RhythmHitMarking InHitType = RhythmHitMarking::BASIC, float InEndTime = 0.0f);
 
 	UFUNCTION(BlueprintCallable, Category = "Rhythm Note")
+	float CalculatePosition();
+
+	UFUNCTION(BlueprintCallable, Category = "Rhythm Note")
 	void SetHitResult(bool bWasHit, const FString& ResultText = "");
 
 	UFUNCTION(BlueprintCallable, Category = "Rhythm Note")
@@ -59,16 +62,25 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Rhythm Note")
 	bool bHasBeenHit;
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Rhythm Note")
+	UFUNCTION(BlueprintNativeEvent, Category = "Rhythm Note")
 	void UpdateNotePosition();
+	virtual void UpdateNotePosition_Implementation();
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Rhythm Note")
+	UFUNCTION(BlueprintNativeEvent, Category = "Rhythm Note")
 	void UpdateLongNote();
+	virtual void UpdateLongNote_Implementation();
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Rhythm Note")
+	UFUNCTION(BlueprintNativeEvent, Category = "Rhythm Note")
 	void OnNoteDestroy();
-
-	float CalculatePosition() const;
+	virtual void OnNoteDestroy_Implementation();
+	
+	UFUNCTION(BlueprintNativeEvent, Category = "Rhythm Note")
+	void PlayHitAnimation();
+	virtual void PlayHitAnimation_Implementation();
+	
+	UFUNCTION(BlueprintNativeEvent, Category = "Rhythm Note")
+	void PlayMissAnimation();
+	virtual void PlayMissAnimation_Implementation();
 
 	bool ShouldDestroyNote() const;
 };

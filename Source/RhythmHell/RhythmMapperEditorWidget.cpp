@@ -231,7 +231,8 @@ bool URhythmMapperEditorWidget::SaveLevelToJSON(const FString& FileName) {
 	const TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&OutputString);
 	FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
 
-	if (const FString FileLocation = FPaths::ProjectContentDir() + TEXT("JSONs/") + FileName; FFileHelper::SaveStringToFile(OutputString, *FileLocation)) {
+	if (const FString FileLocation = FPaths::ProjectContentDir() + TEXT("JSONs/") + FileName + TEXT(".json");
+		FFileHelper::SaveStringToFile(OutputString, *FileLocation)) {
 		UE_LOG(LogTemp, Log, TEXT("Saved level to %s"), *FileLocation);
 		return true;
 	} else {
@@ -334,7 +335,7 @@ bool URhythmMapperEditorWidget::IsSongLoaded() const {
 
 bool URhythmMapperEditorWidget::LoadLevelFromJSON(const FString& FileName) {
 	FString JsonString;
-	const FString FullPath = FPaths::ProjectContentDir() + TEXT("JSONs/") + FileName;
+	const FString FullPath = FPaths::ProjectContentDir() + TEXT("JSONs/") + FileName + TEXT(".json");
 	if (!FFileHelper::LoadFileToString(JsonString, *FullPath)) {
 		UE_LOG(LogTemp, Error, TEXT("Failed to load rhythm level file: %s"), *FullPath);
 		return false;

@@ -54,6 +54,12 @@ protected:
 	UFUNCTION()
 	void OnLevelComplete(int32 TotalScore, int32 MaxCombo, const FString& Rank);
 
+	UFUNCTION()
+	void HandleLevelCompletion();
+
+	UFUNCTION()
+	void SaveLevelResults(int32 TotalScore, int32 MaxCombo, const FString& Rank);
+
 private:
 	bool bIsLevelInitialized;
 

@@ -219,7 +219,7 @@ void URhythmGameplayWidget::OnAudioPlayBackPercent(const USoundWave* SoundWave, 
 	if (ProgressBar) {
 		ProgressBar->SetPercent(Percentage);
 	}
-	CurrentTime = Percentage * TotalDuration;
+	CurrentTime = (Percentage * TotalDuration);
 }
 
 void URhythmGameplayWidget::SetupLanes_Implementation() {

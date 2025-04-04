@@ -90,7 +90,7 @@ void ARhythmHellCharacter::NotifyControllerChanged() {
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-}
+}	
 
 void ARhythmHellCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
 	// Set up action bindings
@@ -146,11 +146,7 @@ void ARhythmHellCharacter::Interact() {
 	SearchForNearbyInteractables(true);
 }
 
-void ARhythmHellCharacter::RhythmHit(const FInputActionValue& Value) {}
-
 void ARhythmHellCharacter::Pause() {
-	UE_LOG(LogTemp, Warning, TEXT("PauseD?"));
-
 	if (bHasPausedGame) {
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
 		RemovePauseMenu();
@@ -249,7 +245,8 @@ void ARhythmHellCharacter::SearchForNearbyInteractables(bool bInteract) {
 	FCollisionQueryParams CollisionQueryParams;
 	CollisionQueryParams.AddIgnoredActor(this);
 
-	if (TArray<FHitResult> HitResults; GetWorld()->SweepMultiByChannel(HitResults, StartPoint, EndPoint, FQuat::Identity, ECC_GameTraceChannel1,
+	if (TArray<FHitResult> HitResults; GetWorld()->SweepMultiByChannel(HitResults, StartPoint, EndPoint,
+	                                                                   FQuat::Identity, ECC_GameTraceChannel1,
 	                                                                   Sphere, CollisionQueryParams)) {
 		bool bPickedUpVinylThisAction = false;
 		AActor* CurrentHighlightedActor = nullptr;

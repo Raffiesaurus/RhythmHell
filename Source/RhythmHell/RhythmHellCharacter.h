@@ -79,8 +79,6 @@ protected:
 
 	void Interact();
 
-	void RhythmHit(const FInputActionValue& Value);
-
 	UFUNCTION(BlueprintCallable)
 	void Pause();
 

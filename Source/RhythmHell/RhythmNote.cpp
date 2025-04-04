@@ -38,6 +38,7 @@ void URhythmNote::NativeTick(const FGeometry& MyGeometry, float InDeltaTime) {
 	}
 
 	if (ShouldDestroyNote()) {
+		UE_LOG(LogTemp, Warning, TEXT("DESTROYING: SpawnTime: %f, HitTime: %f, Direction: %s, HitType: %hhd, EndTime: %f"), SpawnTime, HitTime, *Direction, HitType, EndTime);
 		OnNoteDestroy();
 	}
 }
@@ -54,6 +55,8 @@ void URhythmNote::InitializeNote(float InSpawnTime, float InHitTime, const FStri
 	// if (NoteImage) {
 	// }
 
+	UE_LOG(LogTemp, Warning, TEXT("SpawnTime: %f, HitTime: %f, Direction: %s, HitType: %hhd, EndTime: %f"), InSpawnTime, InHitTime, *InDirection, InHitType, InEndTime);
+	
 	if (NoteTailImage) {
 		if (HitType == RhythmHitMarking::LONG_START) {
 			NoteTailImage->SetVisibility(ESlateVisibility::Visible);
@@ -175,9 +178,9 @@ bool URhythmNote::ShouldDestroyNote() const {
 	}
 
 	if (HitType == RhythmHitMarking::BASIC) {
-		return (CurrentTime > HitTime + 0.5f);
+		return (CurrentTime > HitTime + 2.5f);
 	} else if (HitType == RhythmHitMarking::LONG_START) {
-		return (CurrentTime > EndTime + 0.5f);
+		return (CurrentTime > EndTime + 2.5f);
 	}
 
 	return false;
